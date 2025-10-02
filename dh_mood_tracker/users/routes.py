@@ -1,8 +1,6 @@
 from fastapi import Depends, APIRouter, HTTPException, status
-from sqlalchemy.util import await_only
 
 from dh_mood_tracker.utils import SupaBase, get_supabase, email_validator
-
 from .schemas import UserLogin, CreateInUserSchema
 from .service import UserService, get_user_service
 

@@ -1,3 +1,7 @@
+"""Модуль основного приложения"""
+
+__author__: str = "Digital Horizons"
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -9,7 +13,8 @@ from .core.settings import settings
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
+    """Жизненный цикл приложения"""
     await users_events_subscribe(get_event_bus(get_db_session()))
     yield
 
@@ -19,6 +24,12 @@ app: FastAPI = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, li
 
 @app.get("/health", description="Проверка состояния системы")
 def health_check() -> bool:
+    """
+    Роут для проверки состояния приложения
+
+    :return: готовность приложения
+    :rtype: bool
+    """
     return True
 
 

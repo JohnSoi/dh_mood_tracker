@@ -1,11 +1,11 @@
 from fastapi import Depends
 
 from dh_mood_tracker.db import SessionManagerType, get_db_session
+from dh_mood_tracker.events import BaseEvent
+from dh_mood_tracker.core.service import BaseService
 
 from .model import User as UserModel
-from ..events import BaseEvent
 from .schemas import CreateItemSchema
-from ..core.service import BaseService
 
 
 class UserService(BaseService[UserModel, CreateItemSchema]):
@@ -30,7 +30,5 @@ class UserService(BaseService[UserModel, CreateItemSchema]):
             session.refresh(model_data)
 
 
-def get_user_service(
-    session_db: SessionManagerType = Depends(get_db_session),
-) -> UserService:
+def get_user_service(session_db: SessionManagerType = Depends(get_db_session)) -> UserService:
     return UserService(session_db)

@@ -10,6 +10,7 @@ from supabase_auth.errors import AuthApiError
 from dh_mood_tracker.db import get_db_session
 from dh_mood_tracker.core.settings import settings
 from dh_mood_tracker.events.supabase import SupaBaseUserCreate
+from .consts import EXCEPTION_MESSAGE_MAP
 
 from .event_bus import EventBus, get_event_bus
 
@@ -35,15 +36,8 @@ class SupaBase:
 
     @staticmethod
     def _exception_adapter(exception: Exception) -> tuple[str, int]:
-        EXCEPTION_MESSAGE_MAP: dict[str, tuple[str, int]] = {
-            r"^Email address \"(.*)\" is invalid": (
-                "Некорректный Email",
-                status.HTTP_400_BAD_REQUEST,
-            )
-        }
-
         for pattern, error_msg_code in EXCEPTION_MESSAGE_MAP.items():
-            if bool(re.match(r"^Email address \"(.*)\" is invalid", str(exception))):
+            if bool(re.match(pattern, str(exception))):
                 return error_msg_code
 
         return str(exception), status.HTTP_500_INTERNAL_SERVER_ERROR
