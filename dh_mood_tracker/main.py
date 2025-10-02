@@ -1,21 +1,23 @@
-from fastapi import FastAPI
-from fastapi.params import Depends
+from contextlib import asynccontextmanager
 
-from .core import SupaBase, get_supabase, settings
+from fastapi import FastAPI, Depends
 
-app: FastAPI = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION)
+from .core.settings import settings
+from .db import get_db_session
+from .users import auth_routes, user_routes, users_events_subscribe
+from .utils import get_event_bus
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await users_events_subscribe(get_event_bus(get_db_session()))
+    yield
+
+app: FastAPI = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION, lifespan=lifespan)
 
 
-@app.get("/")
-async def root():
-    return {"Hello": settings.REDIS_URL}
+@app.get("/health", description="Проверка состояния системы")
+def health_check() -> bool:
+    return True
 
-
-@app.post("/register")
-async def register_user(supabase: SupaBase = Depends(get_supabase)) -> dict:
-    return supabase.create_user("un.perso@yandex.ru", "RichardMorgan25")
-
-
-@app.post("/login")
-async def login_user(supabase: SupaBase = Depends(get_supabase)) -> dict:
-    return supabase.login("un.perso@yandex.ru", "RichardMorgan25")
+app.include_router(auth_routes)
+app.include_router(user_routes)

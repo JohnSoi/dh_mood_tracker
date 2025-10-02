@@ -3,9 +3,12 @@ from uuid import UUID
 from pydantic import BaseModel as BaseSchema, Field, EmailStr
 
 
-class CreateInUserSchema(BaseSchema):
+class UserLogin(BaseSchema):
     login: str = Field(..., max_length=50, min_length=4)
     password: str = Field(..., max_length=50, min_length=4)
+
+
+class CreateInUserSchema(UserLogin):
     email: EmailStr
     name: str = Field(..., max_length=50)
     surname: str = Field(..., max_length=50)

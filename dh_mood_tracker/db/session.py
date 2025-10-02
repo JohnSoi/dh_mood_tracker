@@ -1,11 +1,11 @@
 # Создание базового класса для моделей
 import contextlib
-from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base, DeclarativeBase
 
 from dh_mood_tracker.core import settings
+from .types import SessionManagerType
 
 BaseModel: DeclarativeBase = declarative_base()
 
@@ -29,7 +29,7 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 @contextlib.asynccontextmanager
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
+async def get_db_session() -> SessionManagerType:
     """
     Асинхронный контекстный менеджер для работы с сессией БД.
     """
@@ -40,3 +40,5 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         except Exception:
             await session.rollback()
             raise
+        finally:
+            await session.close()
