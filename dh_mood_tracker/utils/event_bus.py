@@ -15,11 +15,11 @@ class EventBus:
         self._db_session: SessionManagerType = db_session
 
     def subscribe(self, event_type: str, handler: EventHandlerType) -> None:
-        print(f"✅ Добавлен обработчик события \"{event_type}\"")
+        print(f'✅ Добавлен обработчик события "{event_type}"')
         self._handlers[event_type].append(handler)
 
     async def publish(self, event: BaseEvent) -> None:
-        print(f"✅ Публикация события \"{event.event_type}\"")
+        print(f'✅ Публикация события "{event.event_type}"')
         for handler in self._handlers[event.event_type]:
             await handler(event, self._db_session)
 

@@ -12,11 +12,11 @@ BaseModel: DeclarativeBase = declarative_base()
 # Создание асинхронного движка базы данных
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=False,           # Логирование SQL запросов
-    pool_pre_ping=True,   # Проверка соединения перед использованием
-    pool_recycle=3600,    # Пересоздание соединения каждый час
-    pool_size=20,         # Размер пула соединений
-    max_overflow=30,      # Максимальное количество соединений сверх pool_size
+    echo=False,  # Логирование SQL запросов
+    pool_pre_ping=True,  # Проверка соединения перед использованием
+    pool_recycle=3600,  # Пересоздание соединения каждый час
+    pool_size=20,  # Размер пула соединений
+    max_overflow=30,  # Максимальное количество соединений сверх pool_size
 )
 
 # Создание асинхронной фабрики сессий
@@ -27,6 +27,7 @@ AsyncSessionLocal = async_sessionmaker(
     autoflush=False,
     autocommit=False,
 )
+
 
 @contextlib.asynccontextmanager
 async def get_db_session() -> SessionManagerType:

@@ -20,10 +20,7 @@ class SupaBase:
 
     async def create_user(self, email: str, password: str, other_data: dict[str, Any]) -> bool:
         try:
-            supabase_data: AuthResponse = self._client.auth.sign_up({
-                "email": email,
-                "password": password
-            })
+            supabase_data: AuthResponse = self._client.auth.sign_up({"email": email, "password": password})
         except AuthApiError as ex:
             detail, status_code = self._exception_adapter(ex)
             raise HTTPException(status_code=status_code, detail=detail)
@@ -33,19 +30,19 @@ class SupaBase:
         return True
 
     def login(self, email: str, password: str) -> AuthResponse:
-        return self._client.auth.sign_in_with_password({
-            "email": email,
-            "password": password
-        })
+        return self._client.auth.sign_in_with_password({"email": email, "password": password})
 
     @staticmethod
     def _exception_adapter(exception: Exception) -> tuple[str, int]:
         EXCEPTION_MESSAGE_MAP: dict[str, tuple[str, int]] = {
-            r'^Email address \"(.*)\" is invalid': ("Некорректный Email", status.HTTP_400_BAD_REQUEST)
+            r"^Email address \"(.*)\" is invalid": (
+                "Некорректный Email",
+                status.HTTP_400_BAD_REQUEST,
+            )
         }
 
         for pattern, error_msg_code in EXCEPTION_MESSAGE_MAP.items():
-            if bool(re.match(r'^Email address \"(.*)\" is invalid', str(exception))):
+            if bool(re.match(r"^Email address \"(.*)\" is invalid", str(exception))):
                 return error_msg_code
 
         return str(exception), status.HTTP_500_INTERNAL_SERVER_ERROR

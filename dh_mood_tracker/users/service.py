@@ -19,7 +19,9 @@ class UserService(BaseService[UserModel, CreateItemSchema]):
 
     async def create_user_by_supabase(self, event: BaseEvent) -> None:
         event_data: dict = event.to_dict().get("data")
-        user_db_data: CreateItemSchema = CreateItemSchema(**event_data.get("UserData"), supabase_id=event_data.get("SupaBaseUuid"))
+        user_db_data: CreateItemSchema = CreateItemSchema(
+            **event_data.get("UserData"), supabase_id=event_data.get("SupaBaseUuid")
+        )
         model_data: UserModel = UserModel(**user_db_data.model_dump(exclude=["password"]))
 
         async with self.session_db as session:
@@ -28,5 +30,7 @@ class UserService(BaseService[UserModel, CreateItemSchema]):
             session.refresh(model_data)
 
 
-def get_user_service(session_db: SessionManagerType = Depends(get_db_session)) -> UserService:
+def get_user_service(
+    session_db: SessionManagerType = Depends(get_db_session),
+) -> UserService:
     return UserService(session_db)

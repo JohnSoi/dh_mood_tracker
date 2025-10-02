@@ -131,7 +131,7 @@ class RedisManager:
             encoding="utf-8",
             decode_responses=True,  # Автоматическое декодирование из bytes в str
             socket_connect_timeout=5,
-            socket_keepalive=True
+            socket_keepalive=True,
         )
         # Тестирование соединения
         try:

@@ -26,7 +26,14 @@ packages = [{include = "dh_mood_tracker"}]
 
 [tool.poetry.group.dev.dependencies]
 pydevd-pycharm = "^253.20558.58"
+pyright = "^1.1.406"
+black = "^25.9.0"
+isort = "^6.1.0"
+pylint = "^3.3.8"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120

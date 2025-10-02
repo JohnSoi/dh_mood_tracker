@@ -7,8 +7,7 @@ from typing import Any
 class BaseEvent(ABC):
     @property
     @abstractmethod
-    def event_type(self) -> str:
-        ...
+    def event_type(self) -> str: ...
 
     @property
     def timestamp(self) -> datetime:
@@ -18,12 +17,11 @@ class BaseEvent(ABC):
         return {
             "event_type": self.event_type,
             "timestamp": self.timestamp,
-            "data": self._get_data()
+            "data": self._get_data(),
         }
 
     @abstractmethod
-    def _get_data(self) -> dict[str, Any]:
-        ...
+    def _get_data(self) -> dict[str, Any]: ...
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
