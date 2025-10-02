@@ -1,12 +1,11 @@
 from collections import defaultdict
-from typing import AsyncGenerator
 
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+
+from dh_mood_tracker.db import SessionManagerType, get_db_session
+from dh_mood_tracker.events import BaseEvent
 
 from .types import EventHandlerType
-from dh_mood_tracker.db import get_db_session, SessionManagerType
-from dh_mood_tracker.events import BaseEvent
 
 
 class EventBus:

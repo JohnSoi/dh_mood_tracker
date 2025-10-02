@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.util import await_only
 
-from .schemas import CreateInUserSchema, UserLogin
+from dh_mood_tracker.utils import SupaBase, get_supabase, email_validator
+
+from .schemas import UserLogin, CreateInUserSchema
 from .service import UserService, get_user_service
-from dh_mood_tracker.utils import email_validator, SupaBase, get_supabase
 
 user_routes: APIRouter = APIRouter(prefix="/users", tags=["users"])
 auth_routes: APIRouter = APIRouter(prefix="/auth", tags=["auth"])

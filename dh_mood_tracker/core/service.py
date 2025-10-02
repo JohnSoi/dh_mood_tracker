@@ -1,4 +1,4 @@
-from typing import Any, Generic, TypeVar, Type
+from typing import Any, Type, Generic, TypeVar
 
 from pydantic import BaseModel as BaseSchema
 from sqlalchemy import select

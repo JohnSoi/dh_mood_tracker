@@ -1,5 +1,5 @@
-from typing import Any
 from uuid import UUID
+from typing import Any
 
 from dh_mood_tracker.events import BaseEvent, EventNames
 

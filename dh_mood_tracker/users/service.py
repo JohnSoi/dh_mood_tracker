@@ -1,11 +1,11 @@
 from fastapi import Depends
-from sqlalchemy import select
 
-from dh_mood_tracker.db import get_db_session, SessionManagerType
+from dh_mood_tracker.db import SessionManagerType, get_db_session
+
 from .model import User as UserModel
+from ..events import BaseEvent
 from .schemas import CreateItemSchema
 from ..core.service import BaseService
-from ..events import BaseEvent
 
 
 class UserService(BaseService[UserModel, CreateItemSchema]):

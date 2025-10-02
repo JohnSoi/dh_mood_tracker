@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
-from datetime import datetime, UTC
 from typing import Any
+from datetime import UTC, datetime
 
 
 class BaseEvent(ABC):

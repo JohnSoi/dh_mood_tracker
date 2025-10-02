@@ -1,4 +1,4 @@
-from typing import TypeAlias, Callable, AsyncGenerator, Coroutine
+from typing import Callable, Coroutine, TypeAlias, AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncSession
 

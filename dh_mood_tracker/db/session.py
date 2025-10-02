@@ -1,10 +1,11 @@
 # Создание базового класса для моделей
 import contextlib
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.orm import declarative_base, DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, declarative_base
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from dh_mood_tracker.core import settings
+
 from .types import SessionManagerType
 
 BaseModel: DeclarativeBase = declarative_base()

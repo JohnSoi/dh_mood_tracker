@@ -1,16 +1,17 @@
 import re
-from typing import Any
 from uuid import UUID
+from typing import Any
 
-from fastapi import Depends, HTTPException, status
-from supabase import create_client, Client
+from fastapi import HTTPException, status
+from supabase import Client, create_client
 from supabase_auth import AuthResponse
 from supabase_auth.errors import AuthApiError
 
-from .event_bus import EventBus, get_event_bus
+from dh_mood_tracker.db import get_db_session
 from dh_mood_tracker.core.settings import settings
 from dh_mood_tracker.events.supabase import SupaBaseUserCreate
-from dh_mood_tracker.db import get_db_session
+
+from .event_bus import EventBus, get_event_bus
 
 
 class SupaBase:

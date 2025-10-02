@@ -1,6 +1,7 @@
 from uuid import UUID
 
-from pydantic import BaseModel as BaseSchema, Field, EmailStr
+from pydantic import Field, EmailStr
+from pydantic import BaseModel as BaseSchema
 
 
 class UserLogin(BaseSchema):

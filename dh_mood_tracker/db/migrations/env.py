@@ -1,12 +1,10 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
 from alembic import context
+from sqlalchemy import pool, engine_from_config
 
-from dh_mood_tracker.core import settings
 from dh_mood_tracker.db import BaseModel
+from dh_mood_tracker.core import settings
 from dh_mood_tracker.models import *
 
 # this is the Alembic Config object, which provides

@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Integer, String, Boolean, UUID
+from sqlalchemy import UUID, String, Boolean, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
 from dh_mood_tracker import db
