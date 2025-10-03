@@ -6,6 +6,7 @@ from typing import Any, Type, Generic, TypeVar
 
 from pydantic import BaseModel as BaseSchema
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from dh_mood_tracker.db import SessionManagerType
 
@@ -41,14 +42,14 @@ class BaseService(Generic[ModelType, SchemaType]):
 
     _MODEL: Type[ModelType]
 
-    def __init__(self, session_db: SessionManagerType) -> None:
+    def __init__(self, session_db: AsyncSession) -> None:
         """
         Инициализация сервиса
 
         :param session_db: менеджер сессий подключения к БД
         :type session_db: SessionManagerType
         """
-        self.session_db: SessionManagerType = session_db
+        self.session_db: AsyncSession = session_db
 
     async def scalar_or_none(self, **filters: Any) -> ModelType | None:
         """
@@ -64,8 +65,20 @@ class BaseService(Generic[ModelType, SchemaType]):
             async def read_by_login(self, login: str) -> UserModel | None:
                 return await UserService.scalar_or_none(login=login)
         """
-        async with self.session_db as session:
-            result = await session.scalar(select(self._MODEL).filter_by(**filters))
-            await session.close()
+        result = await self.session_db.scalar(select(self._MODEL).filter_by(**filters))
 
         return result
+
+    async def create(self, schema_data: SchemaType) -> ModelType:
+        model: ModelType = self._MODEL()
+
+        for key, value in schema_data.model_dump().items():
+            if hasattr(model, key):
+                setattr(model, key, value)
+
+
+        self.session_db.add(model)
+        await self.session_db.commit()
+        await self.session_db.refresh(model)
+
+        return model

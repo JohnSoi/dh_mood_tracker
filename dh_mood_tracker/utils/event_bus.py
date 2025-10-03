@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from dh_mood_tracker.db import SessionManagerType, get_db_session
 from dh_mood_tracker.events import BaseEvent
@@ -9,9 +10,9 @@ from .types import EventHandlerType
 
 
 class EventBus:
-    def __init__(self, db_session: SessionManagerType) -> None:
+    def __init__(self, db_session: AsyncSession) -> None:
         self._handlers: dict[str, list[EventHandlerType]] = defaultdict(list)
-        self._db_session: SessionManagerType = db_session
+        self._db_session: AsyncSession = db_session
 
     def subscribe(self, event_type: str, handler: EventHandlerType) -> None:
         print(f'✅ Добавлен обработчик события "{event_type}"')
@@ -26,7 +27,7 @@ class EventBus:
 event_bus = None
 
 
-def get_event_bus(db_session: SessionManagerType = Depends(get_db_session)) -> EventBus:
+def get_event_bus(db_session: AsyncSession = Depends(get_db_session)) -> EventBus:
     global event_bus
 
     if not event_bus:

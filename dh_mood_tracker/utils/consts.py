@@ -12,5 +12,9 @@ EXCEPTION_MESSAGE_MAP: dict[str, tuple[str, int]] = {
     r"^Email address \"(.*)\" is invalid": (
         "Некорректный Email",
         status.HTTP_400_BAD_REQUEST,
+    ),
+    r"For security purposes, you can only request this after (.*) seconds.": (
+        "Превышен лимит запросов к SupaBase",
+        status.HTTP_429_TOO_MANY_REQUESTS
     )
 }

@@ -2,7 +2,8 @@ import re
 from uuid import UUID
 from typing import Any
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 from supabase import Client, create_client
 from supabase_auth import AuthResponse
 from supabase_auth.errors import AuthApiError
@@ -16,9 +17,9 @@ from .event_bus import EventBus, get_event_bus
 
 
 class SupaBase:
-    def __init__(self) -> None:
+    def __init__(self, session_db: AsyncSession) -> None:
         self._client: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_TOKEN)
-        self._event_bus: EventBus = get_event_bus(get_db_session())
+        self._event_bus: EventBus = get_event_bus(session_db)
 
     async def create_user(self, email: str, password: str, other_data: dict[str, Any]) -> bool:
         try:
@@ -43,13 +44,7 @@ class SupaBase:
         return str(exception), status.HTTP_500_INTERNAL_SERVER_ERROR
 
 
-supabase: SupaBase | None = None
 
 
-def get_supabase() -> SupaBase:
-    global supabase
-
-    if supabase is None:
-        supabase = SupaBase()
-
-    return supabase
+def get_supabase(session_db: AsyncSession = Depends(get_db_session)) -> SupaBase:
+    return SupaBase(session_db)

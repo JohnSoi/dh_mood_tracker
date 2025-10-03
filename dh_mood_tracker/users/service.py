@@ -1,4 +1,5 @@
 from fastapi import Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from dh_mood_tracker.db import SessionManagerType, get_db_session
 from dh_mood_tracker.events import BaseEvent
@@ -22,13 +23,8 @@ class UserService(BaseService[UserModel, CreateItemSchema]):
         user_db_data: CreateItemSchema = CreateItemSchema(
             **event_data.get("UserData"), supabase_id=event_data.get("SupaBaseUuid")
         )
-        model_data: UserModel = UserModel(**user_db_data.model_dump(exclude=["password"]))
-
-        async with self.session_db as session:
-            session.add(model_data)
-            await session.commit()
-            session.refresh(model_data)
+        await self.create(user_db_data)
 
 
-def get_user_service(session_db: SessionManagerType = Depends(get_db_session)) -> UserService:
+def get_user_service(session_db: AsyncSession = Depends(get_db_session)) -> UserService:
     return UserService(session_db)

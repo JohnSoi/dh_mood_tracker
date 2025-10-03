@@ -13,7 +13,7 @@ BaseModel: DeclarativeBase = declarative_base()
 # Создание асинхронного движка базы данных
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=False,  # Логирование SQL запросов
+    echo=settings.DEBUG,  # Логирование SQL запросов
     pool_pre_ping=True,  # Проверка соединения перед использованием
     pool_recycle=3600,  # Пересоздание соединения каждый час
     pool_size=20,  # Размер пула соединений
@@ -30,7 +30,6 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
-@contextlib.asynccontextmanager
 async def get_db_session() -> SessionManagerType:
     """
     Асинхронный контекстный менеджер для работы с сессией БД.

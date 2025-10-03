@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     SUPABASE_URL: str
     SUPABASE_TOKEN: str
 
+    DEBUG: bool = False
+
     class Config:
         env_file = ".env.local" if not os.getenv("DOCKER") else ".env.dev"
         env_file_encoding = "utf-8"
