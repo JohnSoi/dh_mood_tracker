@@ -4,8 +4,8 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dh_mood_tracker.db import get_db_session
-from dh_mood_tracker.events import BaseEvent
 from dh_mood_tracker.core import BaseService
+from dh_mood_tracker.events import BaseEvent
 
 from .model import User as UserModel
 from .schemas import CreateItemSchema

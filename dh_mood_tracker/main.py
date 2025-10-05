@@ -6,10 +6,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from .core.settings import settings
-from .db.session import AsyncSessionLocal
 from .users import auth_routes, user_routes, users_events_subscribe
 from .utils import get_event_bus
+from .db.session import AsyncSessionLocal
+from .core.settings import settings
 
 
 @asynccontextmanager

@@ -1,13 +1,13 @@
 from uuid import UUID
 
-from fastapi import Request, Depends
-from supabase_auth import AuthResponse, Session
+from fastapi import Depends, Request
+from supabase_auth import Session, AuthResponse
 
-from .exceptions import NotValidAccessToken, NotValidUserData
-from .service import UserService, get_user_service
-from .model import User as UserModel
 from dh_mood_tracker.utils import SupaBase, get_supabase
 
+from .model import User as UserModel
+from .service import UserService, get_user_service
+from .exceptions import NotValidUserData, NotValidAccessToken
 
 
 def get_access_token(request: Request) -> str | None:
@@ -17,7 +17,13 @@ def get_access_token(request: Request) -> str | None:
 def get_refresh_token(request: Request) -> str | None:
     return request.cookies.get("RefreshToken")
 
-async def get_user_data(access_token: str = Depends(get_access_token), refresh_token: str = Depends(get_refresh_token), supabase: SupaBase = Depends(get_supabase), user_service: UserService = Depends(get_user_service)) -> UserModel:
+
+async def get_user_data(
+    access_token: str = Depends(get_access_token),
+    refresh_token: str = Depends(get_refresh_token),
+    supabase: SupaBase = Depends(get_supabase),
+    user_service: UserService = Depends(get_user_service),
+) -> UserModel:
     if not access_token or not refresh_token:
         raise NotValidAccessToken()
 
@@ -31,4 +37,3 @@ async def get_user_data(access_token: str = Depends(get_access_token), refresh_t
         raise NotValidUserData()
 
     return user_data
-

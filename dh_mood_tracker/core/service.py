@@ -76,7 +76,6 @@ class BaseService(Generic[ModelType, SchemaType]):
             if hasattr(model, key):
                 setattr(model, key, value)
 
-
         self.session_db.add(model)
         await self.session_db.commit()
         await self.session_db.refresh(model)

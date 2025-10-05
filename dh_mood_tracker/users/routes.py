@@ -1,18 +1,24 @@
-from fastapi import Depends, APIRouter, Response
+from fastapi import Depends, Response, APIRouter
 
 from dh_mood_tracker.utils import SupaBase, get_supabase, email_validator
-from .dependency import get_user_data
-from .exceptions import UserNotFoundByLogin, UserExistByEmail, UserExistByLogin, IncorrectEmail
+
 from .model import User as UserModel
-from .schemas import UserLogin, CreateInUserSchema, PublicUserData
+from .schemas import UserLogin, PublicUserData, CreateInUserSchema
 from .service import UserService, get_user_service
+from .dependency import get_user_data
+from .exceptions import IncorrectEmail, UserExistByEmail, UserExistByLogin, UserNotFoundByLogin
 
 user_routes: APIRouter = APIRouter(prefix="/users", tags=["users"])
 auth_routes: APIRouter = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @auth_routes.post("/login", description="Аутентификация пользователя")
-async def user_login(response: Response, login_data: UserLogin, user_service: UserService = Depends(get_user_service), supabase: SupaBase = Depends(get_supabase)) -> str:
+async def user_login(
+    response: Response,
+    login_data: UserLogin,
+    user_service: UserService = Depends(get_user_service),
+    supabase: SupaBase = Depends(get_supabase),
+) -> str:
     if not (user_data := await user_service.read_by_login(login_data.login)):
         raise UserNotFoundByLogin(login_data.login)
 

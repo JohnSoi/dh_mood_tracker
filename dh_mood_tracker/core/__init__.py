@@ -1,3 +1,9 @@
-from .settings import Settings, settings, get_settings
 from .service import BaseService
-from .exceptions import BaseAppException, BaseNotFoundAppException, BaseNotAuthAppException, BaseBadRequestAppException, BaseExistEntityError
+from .settings import Settings, settings, get_settings
+from .exceptions import (
+    BaseAppException,
+    BaseExistEntityError,
+    BaseNotAuthAppException,
+    BaseNotFoundAppException,
+    BaseBadRequestAppException,
+)

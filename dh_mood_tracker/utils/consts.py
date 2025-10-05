@@ -15,10 +15,10 @@ EXCEPTION_MESSAGE_MAP: dict[str, tuple[str, int]] = {
     ),
     r"For security purposes, you can only request this after (.*) seconds.": (
         "Превышен лимит запросов к SupaBase",
-        status.HTTP_429_TOO_MANY_REQUESTS
+        status.HTTP_429_TOO_MANY_REQUESTS,
     ),
     r"Email not confirmed": (
         "Подтвердите email",
         status.HTTP_401_UNAUTHORIZED,
-    )
+    ),
 }

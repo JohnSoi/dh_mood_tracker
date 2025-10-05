@@ -16,8 +16,7 @@ class UserLogin(BaseSchema):
     password: str = Field(..., max_length=50, min_length=4)
 
 
-class CreateInUserSchema(UserLogin, PublicUserData):
-    ...
+class CreateInUserSchema(UserLogin, PublicUserData): ...
 
 
 class CreateItemSchema(CreateInUserSchema):

@@ -1,5 +1,9 @@
-from dh_mood_tracker.core import BaseNotFoundAppException, BaseExistEntityError, BaseBadRequestAppException, \
-    BaseNotAuthAppException
+from dh_mood_tracker.core import (
+    BaseExistEntityError,
+    BaseNotAuthAppException,
+    BaseNotFoundAppException,
+    BaseBadRequestAppException,
+)
 
 
 class UserNotFoundByLogin(BaseNotFoundAppException):
