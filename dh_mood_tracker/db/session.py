@@ -1,5 +1,6 @@
-# Создание базового класса для моделей
-import contextlib
+"""Модуль для сессии подключения к PostgreSQL"""
+
+__author__: str = "Digital Horizons"
 
 from sqlalchemy.orm import DeclarativeBase, declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -33,6 +34,13 @@ AsyncSessionLocal = async_sessionmaker(
 async def get_db_session() -> SessionManagerType:
     """
     Асинхронный контекстный менеджер для работы с сессией БД.
+
+    .. code-block:: python
+        from sqlalchemy.ext.asyncio import AsyncSession
+        from dh_mood_tracker.db import get_db_session
+
+        def get_event_bus(db_session: AsyncSession = Depends(get_db_session)) -> EventBus:
+            return EventBus(db_session)
     """
     async with AsyncSessionLocal() as session:
         try:

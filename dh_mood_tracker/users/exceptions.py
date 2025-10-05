@@ -28,4 +28,8 @@ class NotValidAccessToken(BaseNotAuthAppException):
 
 
 class NotValidUserData(BaseNotAuthAppException):
-    _DETAIL = "Нет данных о пользователе. Обратитесь в техническую поддержку"
+    _DETAIL: str = "Нет данных о пользователе. Обратитесь в техническую поддержку"
+
+
+class EmailNotConfirmed(BaseNotAuthAppException):
+    _DETAIL: str = "Для доступа в систему подтвердите адрес электронной почты"

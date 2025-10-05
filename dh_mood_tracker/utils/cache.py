@@ -4,10 +4,6 @@ from dh_mood_tracker.db import RedisManager
 
 
 def cache_result(key_pattern: str, expire_seconds: int = 300):
-    """
-    Асинхронный декоратор для кэширования результатов функций в Redis
-    """
-
     def decorator(func):
         async def wrapper(*args, **kwargs):
             # Генерация ключа на основе аргументов
@@ -31,9 +27,6 @@ def cache_result(key_pattern: str, expire_seconds: int = 300):
 
 
 async def invalidate_cache_pattern(pattern: str) -> None:
-    """
-    Асинхронная инвалидация кэша по паттерну
-    """
     try:
         redis_manager = RedisManager()
         client = redis_manager.get_client()

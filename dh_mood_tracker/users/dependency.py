@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from fastapi import Depends, Request
-from supabase_auth import Session, AuthResponse
+from supabase_auth import Session
 
 from dh_mood_tracker.utils import SupaBase, get_supabase
 

@@ -1,7 +1,8 @@
 from uuid import UUID
 from typing import Any
 
-from dh_mood_tracker.events import BaseEvent, EventNames
+from .base import BaseEvent
+from .consts import EventNames
 
 
 class SupaBaseUserCreate(BaseEvent):

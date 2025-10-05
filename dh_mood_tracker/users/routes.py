@@ -18,7 +18,7 @@ async def user_login(
     login_data: UserLogin,
     user_service: UserService = Depends(get_user_service),
     supabase: SupaBase = Depends(get_supabase),
-) -> str:
+) -> bool:
     if not (user_data := await user_service.read_by_login(login_data.login)):
         raise UserNotFoundByLogin(login_data.login)
 
@@ -51,7 +51,7 @@ def get_user_data(user: UserModel = Depends(get_user_data)):
 
 
 @user_routes.get("/email_confirm", description="Подтверждения адрес электронной почты")
-async def email_confirm(access_token: str, supabase: SupaBase = Depends(get_supabase)) -> bool:
-    print(await supabase.confirm_email(access_token))
+def email_confirm(access_token: str, supabase: SupaBase = Depends(get_supabase)) -> bool:
+    supabase.confirm_email(access_token)
 
     return True
