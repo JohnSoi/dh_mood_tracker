@@ -2,7 +2,7 @@ import re
 from uuid import UUID
 from typing import Any
 
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from supabase import Client, create_client
 from supabase_auth import AuthResponse
@@ -23,7 +23,13 @@ class SupaBase:
 
     async def create_user(self, email: str, password: str, other_data: dict[str, Any]) -> bool:
         try:
-            supabase_data: AuthResponse = self._client.auth.sign_up({"email": email, "password": password})
+            supabase_data: AuthResponse = self._client.auth.sign_up({
+                "email": email,
+                "password": password,
+                "options": {
+                    "email_redirect_to": "http://localhost:8000/email_confirm",
+                }
+            })
         except AuthApiError as ex:
             detail, status_code = self._exception_adapter(ex)
             raise HTTPException(status_code=status_code, detail=detail)
@@ -32,8 +38,27 @@ class SupaBase:
 
         return True
 
-    def login(self, email: str, password: str) -> AuthResponse:
-        return self._client.auth.sign_in_with_password({"email": email, "password": password})
+    def login(self, email: str, password: str, response: Response) -> str:
+        try:
+            auth_data: AuthResponse = self._client.auth.sign_in_with_password({"email": email, "password": password})
+            response.set_cookie("AccessToken", auth_data.session.access_token)
+            response.set_cookie("RefreshToken", auth_data.session.refresh_token)
+            return auth_data.session.access_token
+        except AuthApiError as ex:
+            detail, status_code = self._exception_adapter(ex)
+            raise HTTPException(status_code=status_code, detail=detail)
+
+    def confirm_email(self, access_token: str) -> None:
+        return self._client.auth.verify_otp({
+            "type": "email",
+            "token_hash": access_token,
+        })
+
+    def get_session_data(self):
+        return self._client.auth.get_session()
+
+    def set_access_token(self, access_token: str, refresh_token: str) -> None:
+        return self._client.auth.set_session(access_token, refresh_token)
 
     @staticmethod
     def _exception_adapter(exception: Exception) -> tuple[str, int]:

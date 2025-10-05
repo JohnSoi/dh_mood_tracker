@@ -1,0 +1,27 @@
+from dh_mood_tracker.core import BaseNotFoundAppException, BaseExistEntityError, BaseBadRequestAppException, \
+    BaseNotAuthAppException
+
+
+class UserNotFoundByLogin(BaseNotFoundAppException):
+    def __init__(self, login: str) -> None:
+        super().__init__(f'Не найден пользователь по логину "{login}"')
+
+
+class UserExistByLogin(BaseExistEntityError):
+    _DETAIL: str = "Пользователь с таким логином уже существует"
+
+
+class UserExistByEmail(BaseExistEntityError):
+    _DETAIL: str = "Пользователь с таким Email`ом существует"
+
+
+class IncorrectEmail(BaseBadRequestAppException):
+    _DETAIL: str = "Неверный адрес электронной почты"
+
+
+class NotValidAccessToken(BaseNotAuthAppException):
+    _DETAIL: str = "Нет активного токена доступа"
+
+
+class NotValidUserData(BaseNotAuthAppException):
+    _DETAIL = "Нет данных о пользователе. Обратитесь в техническую поддержку"

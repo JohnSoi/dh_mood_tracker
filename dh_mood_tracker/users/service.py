@@ -1,9 +1,11 @@
+from uuid import UUID
+
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dh_mood_tracker.db import SessionManagerType, get_db_session
+from dh_mood_tracker.db import get_db_session
 from dh_mood_tracker.events import BaseEvent
-from dh_mood_tracker.core.service import BaseService
+from dh_mood_tracker.core import BaseService
 
 from .model import User as UserModel
 from .schemas import CreateItemSchema
@@ -17,6 +19,9 @@ class UserService(BaseService[UserModel, CreateItemSchema]):
 
     async def read_by_email(self, email: str) -> UserModel | None:
         return await self.scalar_or_none(email=email)
+
+    async def read_by_supabase_id(self, supabase_id: UUID) -> UserModel | None:
+        return await self.scalar_or_none(supabase_id=supabase_id)
 
     async def create_user_by_supabase(self, event: BaseEvent) -> None:
         event_data: dict = event.to_dict().get("data")
