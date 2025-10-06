@@ -7,8 +7,8 @@ from uuid import UUID
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dh_mood_tracker.core import BaseService
 from dh_mood_tracker.db import get_db_session
+from dh_mood_tracker.core import BaseService
 from dh_mood_tracker.events.supabase import SupaBaseUserCreate
 
 from .model import User as UserModel
@@ -17,6 +17,7 @@ from .schemas import CreateItemSchema
 
 class UserService(BaseService[UserModel, CreateItemSchema]):
     """Модуль сервиса пользователя"""
+
     _MODEL: UserModel = UserModel
 
     async def read_by_login(self, login: str) -> UserModel | None:

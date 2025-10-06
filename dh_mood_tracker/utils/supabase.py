@@ -13,7 +13,7 @@ from supabase_auth.errors import AuthApiError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dh_mood_tracker.db import get_db_session
-from dh_mood_tracker.core import settings, BaseAppException
+from dh_mood_tracker.core import BaseAppException, settings
 from dh_mood_tracker.events import SupaBaseUserCreate
 
 from .consts import EXCEPTION_MESSAGE_MAP

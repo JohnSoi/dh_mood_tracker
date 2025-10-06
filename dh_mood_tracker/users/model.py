@@ -1,3 +1,7 @@
+"""Модуль модели пользователя"""
+
+__author__: str = "Digital Horizons"
+
 import uuid
 
 from sqlalchemy import UUID, String, Boolean, Integer
@@ -7,6 +11,19 @@ from dh_mood_tracker import db
 
 
 class User(db.BaseModel):
+    """
+    Модель пользователя
+
+    :cvar id: идентификатор записи
+    :cvar email: адрес электронной почты
+    :cvar login: логин
+    :cvar name: имя
+    :cvar surname: фамилия
+    :cvar patronymic: отчество
+    :cvar is_active: признак активной записи
+    :cvar supabase_id: UUID пользователя из SupaBase
+    """
+
     __tablename__: str = "users"
 
     id: Mapped[int] = mapped_column(Integer, unique=True, primary_key=True)
@@ -20,6 +37,12 @@ class User(db.BaseModel):
 
     @property
     def full_name(self) -> str:
+        """
+        Полное ФИО пользователя
+
+        :return: полное ФИО
+        :rtype: str
+        """
         result: str = f"{self.surname} {self.name}"
 
         if self.patronymic:
@@ -29,6 +52,12 @@ class User(db.BaseModel):
 
     @property
     def short_full_name(self) -> str:
+        """
+        Полное ФИО пользователя в коротком формате
+
+        :return: полное ФИО в виде Фамилия И.О.
+        :rtype: str
+        """
         result: str = f"{self.surname} {self.name[0]}."
 
         if self.patronymic:

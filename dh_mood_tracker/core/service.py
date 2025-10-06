@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 """Модуль базового сервиса"""
 
 __author__: str = "Digital Horizons"
@@ -8,9 +9,9 @@ from pydantic import BaseModel as BaseSchema
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dh_mood_tracker.db import SessionManagerType
-
+# Тип для модели
 ModelType = TypeVar("ModelType")
+# Тип для схемы данных
 SchemaType = TypeVar("SchemaType", bound=BaseSchema)
 
 
@@ -63,13 +64,29 @@ class BaseService(Generic[ModelType, SchemaType]):
         .. code-block:: python
 
             async def read_by_login(self, login: str) -> UserModel | None:
-                return await UserService.scalar_or_none(login=login)
+                return await UserService().scalar_or_none(login=login)
         """
         result = await self.session_db.scalar(select(self._MODEL).filter_by(**filters))
 
         return result
 
     async def create(self, schema_data: SchemaType) -> ModelType:
+        """
+        Метод создания сущности в БД
+
+        :param schema_data: данные для создания сущности
+        :type schema_data: SchemaType
+        :return: новая сущность в БД
+        :rtype: ModelType
+
+        .. code-block:: python
+            async def create_user_by_supabase(self, event: SupaBaseUserCreate) -> None:
+                event_data: dict = event.to_dict().get("data")
+                user_db_data: CreateItemSchema = CreateItemSchema(
+                    **event_data.get("UserData"), supabase_id=event_data.get("SupaBaseUuid")
+                )
+                await UserService().create(user_db_data)
+        """
         model: ModelType = self._MODEL()
 
         for key, value in schema_data.model_dump().items():

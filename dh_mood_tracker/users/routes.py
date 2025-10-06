@@ -1,3 +1,7 @@
+"""Модуль роутинга пользователей"""
+
+__author__: str = "Digital Horizons"
+
 from fastapi import Depends, Response, APIRouter
 
 from dh_mood_tracker.utils import SupaBase, get_supabase, email_validator
@@ -8,7 +12,9 @@ from .service import UserService, get_user_service
 from .dependency import get_user_data
 from .exceptions import IncorrectEmail, UserExistByEmail, UserExistByLogin, UserNotFoundByLogin
 
+# Роутинг работы с пользователями
 user_routes: APIRouter = APIRouter(prefix="/users", tags=["users"])
+# Роутинг для аутентификации
 auth_routes: APIRouter = APIRouter(prefix="/auth", tags=["auth"])
 
 
@@ -19,39 +25,49 @@ async def user_login(
     user_service: UserService = Depends(get_user_service),
     supabase: SupaBase = Depends(get_supabase),
 ) -> bool:
-    if not (user_data := await user_service.read_by_login(login_data.login)):
+    """Аутентификация пользователя"""
+    # Так как SupaBase принимает на вход email пользователя -
+    # сначала найдем его по логину, а уже потом сходим в SupaBase
+    if not (user_data_db := await user_service.read_by_login(login_data.login)):
         raise UserNotFoundByLogin(login_data.login)
 
-    return supabase.login(user_data.email, login_data.password, response)
+    return supabase.login(user_data_db.email, login_data.password, response)
 
 
 @auth_routes.post("/register", description="Регистрация нового пользователя")
 async def user_register(
-    user_data: CreateInUserSchema,
+    user_data_in: CreateInUserSchema,
     user_service: UserService = Depends(get_user_service),
     supabase: SupaBase = Depends(get_supabase),
 ) -> bool:
-    if not email_validator(user_data.email):
+    """Регистрация нового пользователя"""
+    # Проверим, что email похож на него
+    if not email_validator(user_data_in.email):
         raise IncorrectEmail()
 
-    if await user_service.read_by_email(user_data.email):
+    # Посмотрим, что у нас уже не используется данный email
+    if await user_service.read_by_email(user_data_in.email):
         raise UserExistByEmail()
 
-    if await user_service.read_by_login(user_data.login):
+    # Что нет такого же логина
+    if await user_service.read_by_login(user_data_in.login):
         raise UserExistByLogin()
 
-    await supabase.create_user(user_data.email, user_data.password, user_data.model_dump())
+    # Создадим пользователя в SupaBase и по событию создадим локального пользователя
+    await supabase.create_user(user_data_in.email, user_data_in.password, user_data_in.model_dump())
 
     return True
 
 
 @auth_routes.post("/me", description="Получение информации о текущем пользователе", response_model=PublicUserData)
-def get_user_data(user: UserModel = Depends(get_user_data)):
+def user_data(user: UserModel = Depends(get_user_data)):
+    """Получение информации о текущем пользователе"""
     return user
 
 
 @user_routes.get("/email_confirm", description="Подтверждения адрес электронной почты")
 def email_confirm(access_token: str, supabase: SupaBase = Depends(get_supabase)) -> bool:
+    """Подтверждения адрес электронной почты"""
     supabase.confirm_email(access_token)
 
     return True

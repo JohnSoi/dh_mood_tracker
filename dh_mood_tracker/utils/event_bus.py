@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from dh_mood_tracker.db import get_db_session
 from dh_mood_tracker.events import BaseEvent, EventNames
+
 from .types import EventHandlerType
 
 
@@ -22,6 +23,7 @@ class EventBus:
     :ivar _db_session: сессия подключения к БД
     :type _db_session: AsyncSession
     """
+
     def __init__(self, db_session: AsyncSession) -> None:
         """
         Инициализация шины событий приложения
