@@ -2,6 +2,7 @@
 
 __author__: str = "Digital Horizons"
 
+import uuid
 from uuid import UUID
 
 from fastapi import Depends
@@ -18,7 +19,7 @@ from .schemas import CreateItemSchema
 class UserService(BaseService[UserModel, CreateItemSchema]):
     """Модуль сервиса пользователя"""
 
-    _MODEL: UserModel = UserModel
+    _MODEL = UserModel
 
     async def read_by_login(self, login: str) -> UserModel | None:
         """
@@ -106,9 +107,16 @@ class UserService(BaseService[UserModel, CreateItemSchema]):
         :param event: событие о создании в SupaBase
         :type event: SupaBaseUserCreate
         """
-        event_data: dict = event.to_dict().get("data")
+        event_data: dict = event.to_dict().get("data") or {}
+        user_data: dict = event_data.get("UserData") or {}
         user_db_data: CreateItemSchema = CreateItemSchema(
-            **event_data.get("UserData"), supabase_id=event_data.get("SupaBaseUuid")
+            supabase_id=event_data.get("SupaBaseUuid", uuid.uuid4()),
+            email=user_data.get("email", ""),
+            name=user_data.get("name", ""),
+            surname=user_data.get("surname", ""),
+            patronymic=user_data.get("patronymic", ""),
+            login=user_data.get("login", ""),
+            password=user_data.get("password", ""),
         )
         await self.create(user_db_data)
 

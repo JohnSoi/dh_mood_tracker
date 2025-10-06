@@ -74,10 +74,14 @@ async def get_user_data(
         raise NotValidAccessToken()
 
     supabase.set_access_token(access_token, refresh_token)
-    supabase_data: Session = supabase.get_session_data()
+    supabase_data: Session | None = supabase.get_session_data()
+
+    if not supabase_data:
+        raise NotValidAccessToken()
+
     user_supabase_id: UUID = UUID(supabase_data.user.id)
 
-    user_data: UserModel = await user_service.read_by_supabase_id(user_supabase_id)
+    user_data: UserModel | None = await user_service.read_by_supabase_id(user_supabase_id)
 
     if not user_data:
         raise NotValidUserData()

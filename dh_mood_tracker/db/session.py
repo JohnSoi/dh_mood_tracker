@@ -11,16 +11,15 @@ from dh_mood_tracker.core import settings
 
 from .types import SessionManagerType
 
-Base: DeclarativeBase = declarative_base()
 
-
-class BaseModel(Base):
+class BaseModel(DeclarativeBase):
     """
     Базовая модель
 
     :cvar id: идентификатор записи
     :type id: int
     """
+
     id: Mapped[int] = mapped_column(Integer, unique=True, primary_key=True)
 
 

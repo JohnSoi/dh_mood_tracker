@@ -5,6 +5,7 @@ __author__: str = "Digital Horizons"
 import json
 
 import redis
+from pycparser.ply.yacc import resultlimit
 
 from dh_mood_tracker.core import settings
 
@@ -218,7 +219,7 @@ class RedisManager:
             manager.add_to_set("user_count", 2, 3, 4) # 4
         """
         try:
-            return await self.client.sadd(key, *values)
+            return await self.client.sadd(key, *values)  # type: ignore[awaitable-return]
         except redis.RedisError as e:
             print(f"Ошибка при добавлении в множество: {e}")
             return 0
@@ -239,7 +240,7 @@ class RedisManager:
             manager.get_set_members("user_count") # 1, 2, 3, 4
         """
         try:
-            return await self.client.smembers(key)
+            return await self.client.smembers(key) # type: ignore[awaitable-return]
         except redis.RedisError as e:
             print(f"Ошибка получения множества: {e}")
             return set()

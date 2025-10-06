@@ -28,13 +28,13 @@ class Settings(BaseSettings):
     :type DEBUG: bool
     """
 
-    APP_NAME: str
+    APP_NAME: str = "Base App"
     APP_VERSION: str = "0.0.1"
 
-    DATABASE_URL: str
-    REDIS_URL: str
-    SUPABASE_URL: str
-    SUPABASE_TOKEN: str
+    DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost:5432/db_name"
+    REDIS_URL: str = "redis://localhost:6379"
+    SUPABASE_URL: str = "http://localhost:8000"
+    SUPABASE_TOKEN: str = "<TOKEN>"
 
     DEBUG: bool = False
 
