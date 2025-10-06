@@ -98,7 +98,8 @@ class SupaBase:
         except AuthApiError as ex:
             self._exception_adapter(ex)
 
-        await self._event_bus.publish(SupaBaseUserCreate(UUID(supabase_data.user.id), other_data))
+        if supabase_data.user:
+            await self._event_bus.publish(SupaBaseUserCreate(UUID(supabase_data.user.id), other_data))
 
         return True
 
@@ -138,8 +139,10 @@ class SupaBase:
         """
         try:
             auth_data: AuthResponse = self._client.auth.sign_in_with_password({"email": email, "password": password})
-            response.set_cookie("AccessToken", auth_data.session.access_token)
-            response.set_cookie("RefreshToken", auth_data.session.refresh_token)
+
+            if auth_data.session:
+                response.set_cookie("AccessToken", auth_data.session.access_token)
+                response.set_cookie("RefreshToken", auth_data.session.refresh_token)
             return True
         except AuthApiError as ex:
             self._exception_adapter(ex)
@@ -171,12 +174,12 @@ class SupaBase:
 
         return True
 
-    def get_session_data(self) -> Session:
+    def get_session_data(self) -> Session | None:
         """
         Получение данных сессии текущего пользователя
 
-        :return: данные сессии
-        :rtype: Session
+        :return: данные сессии или None - если нет сессии
+        :rtype: Session | None
 
         .. code-block:: python
             from uuid import UUID
@@ -209,7 +212,7 @@ class SupaBase:
 
                 supabase.set_access_token(access_token, refresh_token)
         """
-        return self._client.auth.set_session(access_token, refresh_token)
+        self._client.auth.set_session(access_token, refresh_token)
 
     @staticmethod
     def _exception_adapter(exception: Exception) -> NoReturn:

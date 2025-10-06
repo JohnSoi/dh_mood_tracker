@@ -4,17 +4,16 @@ __author__: str = "Digital Horizons"
 
 import uuid
 
-from sqlalchemy import UUID, String, Boolean, Integer
+from sqlalchemy import UUID, String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column
 
-from dh_mood_tracker import db
+from dh_mood_tracker.db import BaseModel
 
 
-class User(db.BaseModel):
+class User(BaseModel):
     """
     Модель пользователя
 
-    :cvar id: идентификатор записи
     :cvar email: адрес электронной почты
     :cvar login: логин
     :cvar name: имя
@@ -26,7 +25,6 @@ class User(db.BaseModel):
 
     __tablename__: str = "users"
 
-    id: Mapped[int] = mapped_column(Integer, unique=True, primary_key=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     login: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(50), unique=True, index=True)

@@ -1,15 +1,28 @@
+# pylint: disable=too-few-public-methods
 """Модуль для сессии подключения к PostgreSQL"""
 
 __author__: str = "Digital Horizons"
 
-from sqlalchemy.orm import DeclarativeBase, declarative_base
+from sqlalchemy import Integer
+from sqlalchemy.orm import DeclarativeBase, declarative_base, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from dh_mood_tracker.core import settings
 
 from .types import SessionManagerType
 
-BaseModel: DeclarativeBase = declarative_base()
+Base: DeclarativeBase = declarative_base()
+
+
+class BaseModel(Base):
+    """
+    Базовая модель
+
+    :cvar id: идентификатор записи
+    :type id: int
+    """
+    id: Mapped[int] = mapped_column(Integer, unique=True, primary_key=True)
+
 
 # Создание асинхронного движка базы данных
 engine = create_async_engine(

@@ -31,7 +31,7 @@ class RedisManager:
         """
         return self.client
 
-    async def set_key(self, key: str, value: str, expire_seconds: int = None) -> bool:
+    async def set_key(self, key: str, value: str, expire_seconds: int | None = None) -> bool:
         """
         Установка ключа с возможным временем жизни
 
@@ -40,7 +40,7 @@ class RedisManager:
         :param value: значение для записи
         :type value: str
         :param expire_seconds: время жизни записи в секундах
-        :type expire_seconds: int
+        :type expire_seconds: int | None
         :return: успешность операции
         :rtype: bool
 
@@ -126,7 +126,7 @@ class RedisManager:
             print(f"Ошибка получения существования ключа в Redis: {e}")
             return False
 
-    async def set_json(self, key: str, data: dict, expire_seconds: int = None) -> bool:
+    async def set_json(self, key: str, data: dict, expire_seconds: int | None = None) -> bool:
         """
         Сохранение JSON данных в Redis
 
@@ -135,7 +135,7 @@ class RedisManager:
         :param data: значение для записи в виде словаря
         :type data: dict
         :param expire_seconds: время жизни записи в секундах
-        :type expire_seconds: int
+        :type expire_seconds: int | None
         :return: успешность операции
         :rtype: bool
 
